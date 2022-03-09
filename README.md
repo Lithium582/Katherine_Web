@@ -8,4 +8,12 @@ El objetivo es lograr un proyecto totalmente modular, con la capacidad de usar c
 
 La seguridad también es importante, por lo que se pretende implementar un sistema de tokens JWT (ahora mismo en proceso) con validación manual o usando Identity Framework (si es posible)
 
-
+Pendientes:
+- Modificaciones en las funciones callbacks (promesas)
+- Pantalla de Login independiente
+- Acceso a las APIs usando el token JWT generado
+- Agregar estilos usando Tailwind
+- Generar consola de pruebas
+- Creación de tests unitarios
+- Limpiar páginas generadas automáticamente
+- Implementar algoritmos de hashing para el guardado de la contraseña en base de datos y otros intercambios de información sensible
