@@ -67,8 +67,8 @@ namespace Katherine_API
             });
 
             //Seguridad
-            services.AddIdentity<Usuario, IdentityRole>()
-                .AddDefaultTokenProviders();
+            //services.AddIdentity<Usuario, IdentityRole>()
+            //    .AddDefaultTokenProviders();
 
             //Autenticación
             services.AddAuthentication(options =>
