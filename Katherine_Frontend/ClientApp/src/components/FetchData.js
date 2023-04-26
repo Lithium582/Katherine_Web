@@ -54,18 +54,17 @@ export class FetchData extends Component {
 
     async populateWeatherData() {
         var url = "https://localhost:5021/WeatherForecast";
-        var data = {
-            __RequestVerificationToken: Usuario.token
-        };
+        //var data = {
+        //    __RequestVerificationToken: Usuario.token
+        //};
 
-        console.log("WEATHER", data);
+        //console.log("WEATHER", data);
 
         fetch(
             url,
             {
-                method: "PUT",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' }
             }
         ).then(response => response.json())
             .then(data =>

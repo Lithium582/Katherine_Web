@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Usuario } from "../Clases/Usuario";
+import { Route, Redirect } from 'react-router-dom';
 
 export class Login extends Component {
     constructor(props) {
@@ -35,6 +36,8 @@ export class Login extends Component {
         if (data.token != "") {
             Usuario.token = data.token;
         }
+
+        this.props.history.push("/home");
     }
 
     handleCambioUsuario(event) {

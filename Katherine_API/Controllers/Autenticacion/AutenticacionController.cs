@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Katherine_API.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,55 +12,51 @@ using UsuariosYPermisos;
 
 namespace Katherine_API.Controllers.Autenticacion
 {
+    //El gusanito permite sobreescribir la ruta raíz
     [Route("~/[controller]")]
     [ApiController]
     public class AutenticacionController : Controller
     {
         private readonly IConfiguration _configuration;
-
-        public AutenticacionController(IConfiguration configuration)
+        private readonly JwtSettings _jwtSettings;
+        public AutenticacionController(JwtSettings jwtSettings)
         {
-            _configuration = configuration;
+            this._jwtSettings = jwtSettings;
         }
 
-        //El gusanito permite sobreescribir la ruta raíz
+        //public AutenticacionController(IConfiguration configuration)
+        //{
+        //    _configuration = configuration;
+        //}
+
         [Route("Login")]
         [HttpPut]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public IActionResult Login([FromBody] LoginModel model)
         {
-            var user = Usuario.Login(model.Usuario, model.Password);
-            if (user != null)
+            try
             {
-                //var userRoles = await userManager.GetRolesAsync(user);
-
-                //var authClaims = new List<Claim>
-                //{
-                //    new Claim(ClaimTypes.Name, user.UserName),
-                //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                //};
-
-                //foreach (var userRole in userRoles)
-                //{
-                //    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                //}
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    //claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new
+                var Token = new UserTokens();
+                var user = Usuario.Login(model.Usuario, model.Password);
+                if (user != null)
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                    Token = JwtHelpers.GenTokenkey(new UserTokens()
+                    {
+                        EmailId = user.Email,
+                        GuidId = Guid.NewGuid(),
+                        UserName = user.User,
+                        Id = user.ID,
+                    }, _jwtSettings);
+                }
+                else
+                {
+                    return BadRequest("Wrong password");
+                }
+                return Ok(Token);
             }
-            return Unauthorized();
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
